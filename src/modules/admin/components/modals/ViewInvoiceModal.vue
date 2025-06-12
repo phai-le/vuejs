@@ -2,7 +2,8 @@
 import { ref, computed, watch, toRefs } from 'vue';
 import moment from 'moment';
 import { Printer } from 'lucide-vue-next';
-import { api } from '../../lib/axios';
+import api from '@/lib/axios';
+
 import { useToast } from 'vue-toastification';
 
 const props = defineProps({
@@ -70,10 +71,10 @@ const fetchFullInvoiceDetails = async (bookingId) => {
   if (!bookingId) return;
   isLoading.value = true;
   try {
-    const bookingResponse = await api.get(`/bookings/${bookingId}`);
+    const bookingResponse = await api.get(`api/admins/bookings/${bookingId}`);
     detailedBookingInfo.value = bookingResponse.data?.data;
 
-    const servicesResponse = await api.get(`/bookings/${bookingId}/invoice-details`);
+    const servicesResponse = await api.get(`api/admins/bookings/${bookingId}/invoice-details`);
     fetchedInvoiceServices.value = servicesResponse.data?.data || [];
 
   } catch (error) {

@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { api } from '../lib/axios';
+import api from '@/lib/axios';
 import { useToast } from 'vue-toastification'
-import { useAuthStore } from '@/stores/auth';
 
-const authStore = useAuthStore();
 const toast = useToast()
 
 // Interfaces
@@ -123,8 +121,6 @@ const handleUpdateProfile = async (): Promise<void> => {
             email: editUser.value.email,
             phone: editUser.value.phone
         });
-
-        authStore.fetchAdmin();
 
         toast.success('Profile updated successfully!');
 

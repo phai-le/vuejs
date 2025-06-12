@@ -3,7 +3,7 @@ import { ref, onMounted, computed } from 'vue';
 import { Modal } from 'bootstrap';
 import { Plus, SquarePen, Trash2, X } from 'lucide-vue-next';
 import { useToast } from 'vue-toastification'
-import { api } from '../lib/axios'
+import api from '@/lib/axios';
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
 
@@ -25,7 +25,7 @@ const propertiesList = ref([]);
 
 const fetchProperties = async () => {
   try {
-    const response = await api.get(`/properties`, { params: { per_page: 1000 } });
+    const response = await api.get(`api/admins/properties`, { params: { per_page: 1000 } });
     propertiesList.value = response.data?.data || [];
   } catch (error) {
     propertiesList.value = [];
@@ -36,7 +36,7 @@ const fetchProperties = async () => {
 
 const fetchRoomTypes = async () => {
   try {
-    const response = await api.get(`/room-types`);
+    const response = await api.get(`api/admins/room-types`);
     roomTypes.value = (response.data?.data || []).map(item => ({
       ...item,
       price: parseFloat(item.price),
@@ -110,9 +110,9 @@ const saveRoomType = async () => {
         }))
     };
     if (isEditing.value) {
-      await api.put(`/room-types/${currentRoomType.value.id}`, payload);
+      await api.put(`api/admins/room-types/${currentRoomType.value.id}`, payload);
     } else {
-      await api.post(`/room-types`, payload);
+      await api.post(`api/admins/room-types`, payload);
     }
     await fetchRoomTypes();
     roomTypeModal.hide();
@@ -125,7 +125,7 @@ const saveRoomType = async () => {
 const deleteRoomType = async (id) => {
   if (confirm('Are you sure you want to delete this room type?')) {
     try {
-      await api.delete(`/room-types/${id}`);
+      await api.delete(`api/admins/room-types/${id}`);
       await fetchRoomTypes();
       toast.success('Room type deleted successfully!');
     } catch (error) {
@@ -177,7 +177,7 @@ const closeModal = () => {
               <th scope="col">Name</th>
               <th scope="col">Price</th>
               <th scope="col">Properties</th>
-              <th width="10%" class="text-center">
+              <th  width="10%" class="text-center">
                 <button class="btn btn-primary btn-sm" @click="openAddModal">
                   <Plus />
                 </button>
@@ -201,7 +201,7 @@ const closeModal = () => {
                   </li>
                 </ul>
               </td>
-              <td class="text-center">
+              <td  class="text-center">
                 <button class="btn btn-warning btn-sm mr-1" @click="editRoomType(roomType)">
                   <SquarePen />
                 </button>

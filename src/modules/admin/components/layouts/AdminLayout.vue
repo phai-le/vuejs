@@ -1,12 +1,9 @@
 <script setup lang="ts">
+import axios from 'axios';
 import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { api } from '@/modules/admin/lib/axios';
+import api from '@/lib/axios';
 import { useToast } from 'vue-toastification';
-import { useAuthStore } from '@/stores/auth';
-import { USER_ROLES } from '@/modules/admin/constants';
-
-const authStore = useAuthStore();
 
 const route = useRoute();
 const router = useRouter();
@@ -20,11 +17,20 @@ const isBookingsDropdownOpen = ref(false);
 
 const logout = async () => {
   try {
-    await api.post('/logout');
-    router.push('/admins/login');
+    // Ensure token is present in header before logout request
+    const token = localStorage.getItem('token');
+    if (token) {
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+    await api.post('/api/admins/logout');
+
+    localStorage.removeItem('token');
+    delete api.defaults.headers.common['Authorization'];
+
     toast.success('You have been logged out');
+    router.push('/admins/login');
   } catch (error) {
-    console.error(error);
+    console.error('Logout error:', error);
     toast.error('Failed to logout');
   }
 }
@@ -157,8 +163,7 @@ watch(() => route.path, () => {
           </router-link>
         </li>
 
-        <li v-if="authStore.user.role === USER_ROLES.SUPERADMIN" class="nav-item"
-          :class="{ 'active': isRoomsDropdownActive || isRoomsDropdownOpen }">
+        <li class="nav-item" :class="{ 'active': isRoomsDropdownActive || isRoomsDropdownOpen }">
           <a class="nav-link collapsed" href="#" @click.prevent="toggleRoomsDropdown"
             :aria-expanded="isRoomsDropdownOpen">
             <span>Rooms & Properties</span>
@@ -196,8 +201,7 @@ watch(() => route.path, () => {
           </div>
         </li>
 
-        <li v-if="authStore.user.role === USER_ROLES.SUPERADMIN" class="nav-item"
-          :class="{ 'active': isActiveRoute('/admins/services') }">
+        <li class="nav-item" :class="{ 'active': isActiveRoute('/admins/services') }">
           <router-link class="nav-link" to="/admins/services">
             <span>Service</span>
           </router-link>
@@ -214,6 +218,12 @@ watch(() => route.path, () => {
             <span>Users</span>
           </router-link>
         </li>
+
+        <li class="nav-item">
+          <router-link class="nav-link" to="/admins/admin-accounts">
+            <span>Admin Accounts</span>
+          </router-link>
+        </li>
       </ul>
 
       <div id="content-wrapper" class="d-flex flex-column">
@@ -227,7 +237,6 @@ watch(() => route.path, () => {
               <li class="nav-item dropdown no-arrow">
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                   @click.prevent="toggleUserDropdown" :aria-expanded="isUserDropdownOpen">
-                  <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ authStore.user.name }}</span>
                   <i class="fas fa-caret-down dropdown-arrow-user ml-1"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right shadow"

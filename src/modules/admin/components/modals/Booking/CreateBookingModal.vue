@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch } from 'vue';
-import { api } from '@/modules/admin/lib/axios';
+import api from '@/lib/axios';
 import moment from 'moment';
 import { useToast } from 'vue-toastification';
 
@@ -140,7 +140,7 @@ const checkRoomAvailability = async () => {
     const formattedCheckin = moment(availabilityCheck.value.checkin_at).format('YYYY-MM-DD HH:mm');
     const formattedCheckout = moment(availabilityCheck.value.checkout_at).format('YYYY-MM-DD HH:mm');
 
-    const response = await api.post(`/bookings/check-room-availability`, {
+    const response = await api.post(`api/admins/bookings/check-room-availability`, {
       checkin_at: formattedCheckin,
       checkout_at: formattedCheckout,
     });
@@ -231,7 +231,7 @@ const createBooking = async () => {
       booking_details: finalBookingDetails
     };
 
-    const response = await api.post(`/bookings`, payload);
+    const response = await api.post(`api/admins/bookings`, payload);
     toast.success('Booking created successfully!');
     emit('bookingCreated');
     close();

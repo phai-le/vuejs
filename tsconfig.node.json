@@ -6,14 +6,20 @@
     "cypress.config.*",
     "nightwatch.conf.*",
     "playwright.config.*",
-    "eslint.config.*"
+    "eslint.config.*",
+    "src", // <-- thêm thư mục src chứa code Vue
+    "env.d.ts" // <-- nếu bạn có file env.d.ts (Vite setup mặc định)
   ],
   "compilerOptions": {
     "noEmit": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
-
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "types": ["node"]
+    "jsx": "preserve", // ✅ BẮT BUỘC để fix lỗi JSX
+    "types": [
+      "vite/client",
+      "vue"
+    ], // ✅ Bổ sung types Vue và JSX
+    "allowSyntheticDefaultImports": true
   }
 }

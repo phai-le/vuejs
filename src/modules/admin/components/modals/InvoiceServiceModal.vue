@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch, onMounted, computed } from 'vue';
-import { api } from '../../lib/axios';
+import api from '@/lib/axios';
 import { useToast } from 'vue-toastification';
 import moment from 'moment';
 import vSelect from 'vue-select';
@@ -28,7 +28,7 @@ const formatDateTime = (dateTimeString) => {
 
 const fetchAvailableServices = async () => {
   try {
-    const response = await api.get(`/services`);
+    const response = await api.get(`api/admins/services`);
     availableServices.value = response.data?.data || [];
   } catch (error) {
     console.error('Error fetching available services:', error);
@@ -40,7 +40,7 @@ const fetchInvoiceDetails = async (bookingId) => {
   if (!bookingId) return;
   isLoading.value = true;
   try {
-    const response = await api.get(`/bookings/${bookingId}/invoice-details`);
+    const response = await api.get(`api/admins/bookings/${bookingId}/invoice-details`);
     invoiceDetails.value = response.data?.data || [];
   } catch (error) {
     if (error.response && error.response.status === 404) {
@@ -102,7 +102,7 @@ const removeServiceFromInvoice = async (detail, index) => {
 
   if (detail.id) {
     try {
-      await api.delete(`/bookings/${props.booking.id}/invoice-details/${detail.id}`);
+      await api.delete(`api/admins/bookings/${props.booking.id}/invoice-details/${detail.id}`);
       toast.success(`Deleted "${detail.name}".`);
       invoiceDetails.value.splice(index, 1);
       emit('invoice-updated');
@@ -130,7 +130,7 @@ const saveInvoice = async () => {
         quantity: d.quantity,
       })),
     };
-    const response = await api.post(`/bookings/${props.booking.id}/invoice-details`, payload);
+    const response = await api.post(`api/admins/bookings/${props.booking.id}/invoice-details`, payload);
     invoiceDetails.value = response.data?.invoice_details || [];
     toast.success('Invoice saved!');
     emit('invoice-updated');
@@ -188,10 +188,10 @@ const handleCheckout = async () => {
         quantity: d.quantity,
       })),
     };
-    const invoiceSaveResponse = await api.post(`/bookings/${props.booking.id}/invoice-details`, payload);
+    const invoiceSaveResponse = await api.post(`api/admins/bookings/${props.booking.id}/invoice-details`, payload);
     invoiceDetails.value = invoiceSaveResponse.data?.invoice_details || [];
 
-    await api.post(`/bookings/${props.booking.id}/check-out`);
+    await api.post(`api/admins/bookings/${props.booking.id}/check-out`);
 
     toast.success('Checkout successful!');
     emit('invoice-updated');
