@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from 'vue';
 import RevenueChart from '@/modules/admin/components/RevenueChart.vue';
-import moment from 'moment';
+// import moment from 'moment';
 import { ChartData } from 'chart.js';
 import { api } from '@/modules/admin/lib/axios';
 
@@ -100,7 +100,7 @@ const fetchBookings = async () => {
 
 const formatDate = (dateString: string | null, format = 'DD-MM-YYYY HH:mm') => {
   if (!dateString) return '';
-  return moment(dateString).format(format);
+  // return moment(dateString).format(format);
 };
 
 const getStatusText = (status: number) => {
