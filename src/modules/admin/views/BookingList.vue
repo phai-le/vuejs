@@ -121,7 +121,7 @@
 <script setup>
 import { reactive, onMounted, ref } from 'vue';
 import { useToast } from 'vue-toastification';
-import { api } from '../lib/axios';
+import api from '@/lib/axios';
 import BookingDetailModal from '../components/modals/Booking/BookingDetailModal.vue';
 import EditBookingModal from '../components/modals/Booking/EditBookingModal.vue';
 
@@ -143,7 +143,7 @@ const filters = reactive({
 
 const fetchBookings = async (page = 1) => {
   try {
-    const response = await api.get('/bookings', {
+    const response = await api.get('api/admins/bookings', {
       params: {
         page: page,
         ...filters
@@ -205,7 +205,7 @@ const confirmBooking = async (bookingId) => {
   const confirmed = confirm('Are you sure you want to confirm this booking?');
   if (!confirmed) return;
   try {
-    await api.post(`/bookings/${bookingId}/confirm`);
+    await api.post(`api/admins/bookings/${bookingId}/confirm`);
     toast.success('Booking confirmed successfully!');
     await fetchBookings(pagination.value.current_page || 1);
   } catch (error) {
@@ -218,7 +218,7 @@ const cancelBooking = async (bookingId) => {
   const confirmed = confirm('Are you sure you want to cancel this booking?');
   if (!confirmed) return;
   try {
-    await api.post(`/bookings/${bookingId}/cancelled`);
+    await api.post(`api/admins/bookings/${bookingId}/cancelled`);
     toast.success('Booking cancelled successfully!');
     await fetchBookings(pagination.value.current_page || 1);
   } catch (error) {

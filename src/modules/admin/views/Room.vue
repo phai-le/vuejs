@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, reactive, nextTick, computed, watch } from 'vue'
 import { Modal } from 'bootstrap'
-import { api } from '@/modules/admin/lib/axios'
+import api from '@/lib/axios';
 import { useToast } from 'vue-toastification'
 import CreateRoomModal from '@/modules/admin/components/modals/room/CreateForm.vue'
 import EditRoomModal from '@/modules/admin/components/modals/room/EditForm.vue'
 import Pagination from '@/modules/admin/components/layouts/Pagination.vue'
+import { USER_ROLES } from '@/modules/admin/constants';
 
 const records = ref([])
 const roomDetails = ref<any | null>(null)
@@ -33,7 +34,7 @@ const searchTerm = reactive({
 
 const fetchRooms = async () => {
   try {
-    const response = await api.get('/rooms', {
+    const response = await api.get('api/admins/rooms', {
       params: {
         page: currentPage.value
       }
@@ -51,7 +52,7 @@ const fetchRooms = async () => {
 
 const fetchRoomTypes = async () => {
   try {
-    const response = await api.get('/room-types')
+    const response = await api.get('api/admins/room-types')
     roomTypes.value = response.data.data
   } catch (error) {
     console.error('Error fetching room types:', error)
@@ -61,7 +62,7 @@ const fetchRoomTypes = async () => {
 
 const fetchRoomDetails = async (roomId: number) => {
   try {
-    const response = await api.get(`/rooms/${roomId}`)
+    const response = await api.get(`api/admins/rooms/${roomId}`)
     const fetchedData = response.data.data
 
     if (fetchedData) {
@@ -114,7 +115,7 @@ const fetchRoomDetails = async (roomId: number) => {
 
 const searchRooms = async () => {
   try {
-    const response = await api.get('/rooms', {
+    const response = await api.get('api/admins/rooms', {
       params: {
         ...searchTerm,
       }
@@ -269,7 +270,7 @@ const deleteRoom = async (roomId: number) => {
   }
 
   try {
-    await api.delete(`/rooms/${roomId}`);
+    await api.delete(`api/admins/rooms/${roomId}`);
     toast.success('Room deleted successfully!');
     fetchRooms(); // Reload room list after deletion
     closeRoomDetailsModal(); // Close the details modal if open
@@ -363,10 +364,7 @@ onUnmounted(() => {
                 <select class="form-select" id="status" v-model="searchTerm.status">
                   <option value="">--All status--</option>
                   <option value="1">Active</option>
-                  <option value="2">Booked</option>
-                  <option value="3">Occupied</option>
-                  <option value="4">Cleaning</option>
-                  <option value="5">Inactive</option>
+                  <option value="2">Inactive</option>
                 </select>
                 <input v-model="searchTerm.name" type="text" class="form-control" placeholder="Name..."
                   aria-label="Search" aria-describedby="basic-addon2">

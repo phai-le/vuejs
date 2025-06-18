@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { Modal } from 'bootstrap'
-import { api, csrf } from '@/modules/admin/lib/axios'
+import api from '@/lib/axios'
 import { useToast } from 'vue-toastification'
 import Editor from '@tinymce/tinymce-vue'
 
@@ -152,7 +152,7 @@ const fetchRoomTypes = async () => {
   errorRoomTypes.value = null
 
   try {
-    const response = await api.get('/room-types')
+    const response = await api.get('api/admins/room-types')
     roomTypes.value = response.data.data
   } catch (error) {
     console.error('Error loading room types:', error)
@@ -238,7 +238,7 @@ const submitForm = async () => {
     validationErrors.value = {}
     let response;
 
-    response = await api.post(`/rooms/${props.initialRoomData.id}`, formData, {
+    response = await api.post(`api/admins/rooms/${props.initialRoomData.id}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -288,7 +288,7 @@ const submitForm = async () => {
                   </option>
                 </select>
                 <div v-if="validationErrors.room_type_id" class="text-danger mt-1">{{ validationErrors.room_type_id[0]
-                }}</div>
+                  }}</div>
                 <div v-if="loadingRoomTypes">Loading room types...</div>
                 <div v-if="errorRoomTypes" class="text-danger">{{ errorRoomTypes }}</div>
               </div>

@@ -3,14 +3,14 @@ import { ref, onMounted, computed } from 'vue';
 import RevenueChart from '@/modules/admin/components/RevenueChart.vue';
 import moment from 'moment';
 import { ChartData } from 'chart.js';
-import { api } from '@/modules/admin/lib/axios';
+import api from '@/lib/axios';
 
 const revenueType = ref('day');
 const rawData = ref<any[]>([]);
 const isTransitioning = ref(true);
 const getRevenue = async (type: string) => {
   try {
-    const response = await api.get('/revenue', { params: { type } });
+    const response = await api.get('api/admins/revenue', { params: { type } });
     rawData.value = response.data;
   } catch (error) {
     console.error('Error fetching revenue data:', error);
@@ -61,7 +61,7 @@ const bookings = ref<any[]>([]);
 
 const fetchRoomCheckouts = async () => {
   try {
-    const response = await api.get('/get-today-checkout-rooms');
+    const response = await api.get('api/admins/get-today-checkout-rooms');
     roomCheckouts.value = response.data;
   } catch (error) {
     console.error('Error fetching room checkouts:', error);
@@ -71,7 +71,7 @@ const fetchRoomCheckouts = async () => {
 
 const fetchContact = async () => {
   try {
-    const response = await api.get('/count-contacts');
+    const response = await api.get('api/admins/count-contacts');
     contacts.value = response.data;
   } catch (error) {
     console.error('Error fetching count contact', error);
@@ -80,7 +80,7 @@ const fetchContact = async () => {
 
 const fetchUsers = async () => {
   try {
-    const response = await api.get('/count-users');
+    const response = await api.get('api/admins/count-users');
     users.value = response.data;
   } catch (error) {
     console.error('Error fetching count users:', error);
@@ -89,7 +89,7 @@ const fetchUsers = async () => {
 
 const fetchBookings = async () => {
   try {
-    const response = await api.get('/count-bookings');
+    const response = await api.get('api/admins/count-bookings');
     bookings.value = response.data;
   } catch (error) {
     console.error('Error fetching count users:', error);
@@ -108,6 +108,7 @@ const getStatusText = (status: number) => {
     case 1: return 'PENDING';
     case 2: return 'CHECKED IN';
     case 3: return 'CHECKED OUT';
+    case 4: return 'CANCELLED';
     default: return 'UNKNOWN';
   }
 };
@@ -117,6 +118,7 @@ const getBadgeClass = (status: number) => {
     case 1: return 'bg-secondary';
     case 2: return 'bg-primary';
     case 3: return 'bg-success';
+    case 4: return 'bg-danger';
     default: return 'bg-dark';
   }
 };

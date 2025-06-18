@@ -1,4 +1,4 @@
-import { api, csrf } from "@/modules/admin/lib/axios";
+import api from "@/lib/axios";
 import type { Contact } from "../../stores/model/Contact.model";
 
 interface Meta {
@@ -11,31 +11,31 @@ interface Meta {
   total: number;
 }
 
-export const getContacts = async (params: { page?: number }): Promise<{ 
-  data: Contact[]; 
+export const getContacts = async (params: { page?: number }): Promise<{
+  data: Contact[];
   meta: Meta;
 }> => {
-  const response = await api.get('/contacts', {
-      params: {
-          ...params,
-          page: params.page
-      }
+  const response = await api.get('api/admins/contacts', {
+    params: {
+      ...params,
+      page: params.page
+    }
   });
 
   return {
-      data: response.data.data,
-      meta: response.data.meta
+    data: response.data.data,
+    meta: response.data.meta
   };
 };
 
 export const getContactById = async (id: number): Promise<Contact> => {
-    const response = await api.get(`/contacts/${id}`);
+  const response = await api.get(`api/admins/contacts/${id}`);
 
-    return response.data.data;
+  return response.data.data;
 };
 
 export const sendMail = async (data: Partial<Contact>, id: number) => {
-  const response = await api.post(`/contacts/${id}/send-mail`, data);
+  const response = await api.post(`api/admins/contacts/${id}/send-mail`, data);
 
   return response.data.data;
 };

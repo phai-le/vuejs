@@ -1,38 +1,45 @@
 <script setup lang="ts">
+import axios from 'axios'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { api, csrf } from '@/modules/admin/lib/axios'
+import api from '@/lib/axios' // ✅ dùng default export
 import { ValidationErrors } from '@/modules/customer/types/auth'
-import { useAuthStore } from '@/stores/auth'
+import { useAuth } from '@/composables/auth'
+import { useToast } from 'vue-toastification'
 
+const toast = useToast()
 const email = ref('')
 const password = ref('')
 const router = useRouter()
 const errors = ref<ValidationErrors>({})
-const authStore = useAuthStore()
+const { login } = useAuth()
 
 const handleLogin = async () => {
   try {
-    await csrf.get('/sanctum/csrf-cookie')
-    await api.post('/login', {
-      email: email.value,
-      password: password.value
-    })
+    const formData = new FormData()
+    formData.append('email', email.value)
+    formData.append('password', password.value)
 
-    await authStore.fetchAdmin()
-    router.push({ name: 'AdminDashboard' })
-  } catch (error: any) {
-    if (error.response && error.status === 422) {
-      errors.value = error.response.data.errors
-    }
-    else if (error.response && error.response.status === 401) {
-      alert('Invalid credentials')
-    } else {
-      alert('An error occurred during login. Please try again.')
-    }
+    const response = await api.post(`/api/admins/login`, formData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = response.data as { token: string };
+
+    const token = data.token;
+
+    login(token);
+    router.push('/admins/dashboard');
+    toast.success('Login successfully!')
+  } catch (error) {
+    console.error(error)
+    alert('Login failed!')
   }
 }
 </script>
+
 
 <template>
   <main>

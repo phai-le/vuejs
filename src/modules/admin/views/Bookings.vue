@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { api } from '../lib/axios';
+import api from '@/lib/axios';
 import moment from 'moment';
 import 'moment/locale/en-gb';
 moment.locale('en-gb');
@@ -37,7 +37,7 @@ const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Satur
 
 const fetchBookings = async () => {
   try {
-    const response = await api.get(`/bookings`, { params: { month: currentMonth.value + 1, year: currentYear.value } });
+    const response = await api.get(`api/admins/bookings`, { params: { month: currentMonth.value + 1, year: currentYear.value } });
     rawBookings.value = response.data?.data || [];
     processBookings(rawBookings.value);
   } catch (error) {
@@ -283,7 +283,7 @@ const closeViewInvoiceModal = () => {
 const confirmBooking = async (bookingId) => {
   if (confirm('Are you sure you want to confirm this booking?')) {
     try {
-      await api.post(`/bookings/${bookingId}/confirm`);
+      await api.post(`api/admins/bookings/${bookingId}/confirm`);
       toast.success('Booking confirmed successfully!');
       await fetchBookings();
     } catch (error) {
@@ -296,7 +296,7 @@ const confirmBooking = async (bookingId) => {
 const guestNoShow = async (bookingId) => {
   if (confirm('Are you sure want to mark this booking as no show?')) {
     try {
-      await api.post(`/bookings/${bookingId}/no-show`);
+      await api.post(`api/admins/bookings/${bookingId}/no-show`);
       toast.success('Booking confirmed successfully!');
       await fetchBookings();
     } catch (error) {
@@ -309,7 +309,7 @@ const guestNoShow = async (bookingId) => {
 const cancelBooking = async (bookingId) => {
   if (confirm('Are you sure want to cancel this booking?')) {
     try {
-      await api.post(`/bookings/${bookingId}/cancelled`);
+      await api.post(`api/admins/bookings/${bookingId}/cancelled`);
       toast.success('Booking cancelled successfully!');
       await fetchBookings();
     } catch (error) {
@@ -322,7 +322,7 @@ const cancelBooking = async (bookingId) => {
 const deleteBooking = async (bookingId) => {
   if (confirm('Are you sure want to delete this booking?')) {
     try {
-      await api.delete(`/bookings/${bookingId}`);
+      await api.delete(`api/admins/bookings/${bookingId}`);
       toast.success('Booking deleted successfully!');
       await fetchBookings();
     } catch (error) {

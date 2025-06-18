@@ -81,7 +81,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { Modal } from 'bootstrap'
-import { api } from '@/modules/admin/lib/axios'
+import api from '@/lib/axios';
 import { useToast } from 'vue-toastification'
 import Editor from '@tinymce/tinymce-vue';
 
@@ -149,7 +149,7 @@ const fetchRoomTypes = async () => {
   errorRoomTypes.value = null
 
   try {
-    const response = await api.get('/room-types')
+    const response = await api.get('api/admins/room-types')
     roomTypes.value = response.data.data
   } catch (error) {
     console.error('Error fetching room types:', error)
@@ -218,9 +218,8 @@ const submitForm = async () => {
 
   try {
 
-    const response = await api.post('/rooms', formData, {
+    const response = await api.post('api/admins/rooms', formData, {
       headers: {
-
         'Content-Type': 'multipart/form-data'
       }
     })

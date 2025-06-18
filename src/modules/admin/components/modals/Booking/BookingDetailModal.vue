@@ -3,7 +3,7 @@ import { ref, computed, watch } from 'vue';
 import moment from 'moment';
 import { useToast } from 'vue-toastification';
 import ViewInvoiceModal from '../ViewInvoiceModal.vue';
-import { api } from '@/modules/admin/lib/axios';
+import api from '@/lib/axios';
 
 const toast = useToast();
 
@@ -74,7 +74,7 @@ const close = () => {
 const confirmBooking = async (bookingId) => {
   if (confirm('Are you sure you want to confirm this booking?')) {
     try {
-      await api.post(`/bookings/${bookingId}/confirm`);
+      await api.post(`api/admins/bookings/${bookingId}/confirm`);
       toast.success('Booking confirmed successfully!');
       emit('bookingConfirmed');
       close();
@@ -107,7 +107,7 @@ const closeViewInvoiceModal = () => {
 const checkInRoom = async (bookingId, detailId) => {
   if (confirm('Are you sure you want to check in this room?')) {
     try {
-      await api.post(`/bookings/${bookingId}/check-in`, { ids: [detailId] });
+      await api.post(`api/admins/bookings/${bookingId}/check-in`, { ids: [detailId] });
       toast.success('Room checked in successfully!');
       emit('bookingConfirmed'); // To trigger data refresh in parent
     } catch (error) {
@@ -120,7 +120,7 @@ const checkInRoom = async (bookingId, detailId) => {
 const checkOutRoom = async (bookingId, detail) => {
   if (confirm('Are you sure you want to check out this room?')) {
     try {
-      await api.post(`/bookings/${bookingId}/check-out-room`, { room_id: detail.room_id });
+      await api.post(`api/admins/bookings/${bookingId}/check-out-room`, { room_id: detail.room_id });
       toast.success('Room checked out successfully!');
       emit('bookingConfirmed'); // To trigger data refresh in parent
     } catch (error) {
@@ -133,7 +133,7 @@ const checkOutRoom = async (bookingId, detail) => {
 const cancelBooking = async (bookingId) => {
   if (confirm('Are you sure want to cancel this booking?')) {
     try {
-      await api.post(`/bookings/${bookingId}/cancelled`);
+      await api.post(`api/admins/bookings/${bookingId}/cancelled`);
       toast.success('Booking cancelled successfully!');
       emit('bookingConfirmed');
       close();

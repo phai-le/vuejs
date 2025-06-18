@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch, onMounted, computed } from 'vue';
-import { api } from '@/modules/admin/lib/axios';
+import api from '@/lib/axios';
 import moment from 'moment';
 import { useToast } from 'vue-toastification';
 import FlatPickr from 'vue-flatpickr-component';
@@ -136,7 +136,7 @@ const checkAvailability = async () => {
     return;
   }
   try {
-    const response = await api.post('/bookings/check-room-availability', {
+    const response = await api.post('api/admins/bookings/check-room-availability', {
       checkin_at: searchCheckInTime.value,
       checkout_at: searchCheckOutTime.value
     });
@@ -275,7 +275,7 @@ const updateBooking = async () => {
   };
 
   try {
-    await api.put(`/bookings/${bookingId.value}`, payload);
+    await api.put(`api/admins/bookings/${bookingId.value}`, payload);
     toast.success('Booking updated successfull!');
     emit('bookingUpdated');
     closeModal();
