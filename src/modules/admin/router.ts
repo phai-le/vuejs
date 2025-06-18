@@ -7,13 +7,7 @@ import Bookings from './views/Bookings.vue'
 import RoomType from './views/RoomType.vue'
 import Rooms from './views/Room.vue'
 import Profile from './views/Profile.vue'
-
-import ServiceList from '@/modules/admin/views/service/ServiceList.vue'
-import ContactList from '@/modules/admin/views/contact/ContactList.vue'
-import UserList from '@/modules/admin/views/user/UserList.vue'
-import UserCreate from '@/modules/admin/views/user/UserCreate.vue'
 import BookingList from './views/BookingList.vue'
-import Adminlist from './views/admin/AdminList.vue'
 
 const adminRoutes: Array<RouteRecordRaw> = [
   {
@@ -55,34 +49,9 @@ const adminRoutes: Array<RouteRecordRaw> = [
         redirect: '/admins/login'
       },
       {
-        path: 'services',
-        name: 'AdminServiceList',
-        component: ServiceList,
-      },
-      {
-        path: 'contacts',
-        name: 'AdminContactList',
-        component: ContactList,
-      },
-      {
         path: 'rooms',
         name: 'Rooms',
         component: Rooms,
-      },
-      {
-        path: 'users',
-        name: 'AdminUserList',
-        component: UserList,
-      },
-      {
-        path: 'users/create',
-        name: 'AdminUserCreate',
-        component: UserCreate,
-      },
-      {
-        path: 'admin-accounts',
-        name: 'Adminlist',
-        component: Adminlist,
       },
       {
         path: 'profile',
